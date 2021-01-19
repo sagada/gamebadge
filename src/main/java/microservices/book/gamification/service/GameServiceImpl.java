@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,9 +39,11 @@ public class GameServiceImpl implements GameService {
             log.info("사용자 ID {}, 점수 {}점, 답안 ID {}", userId, scoreCard.getScore(), attemptId);
 
             List<BadgeCard> badgeCardList = processForBadges(userId, attemptId);
-
+            return new GameStats(userId, scoreCard.getScore(), badgeCardList.stream()
+            .map(BadgeCard::getBadge).collect(Collectors.toList()));
 
         }
+        return GameStats.emptyStats(userId);
     }
 
     /**
@@ -55,9 +58,25 @@ public class GameServiceImpl implements GameService {
 
         List<ScoreCard> scoreCardList = scoreCardRepository.findByUserIdOrderByScoreTimeStampDesc(userId);
         List<BadgeCard> badgeCardList = badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
+
         // 점수 기반 배지
-        Optional<BadgeCard> badgeCard = checkAndGiveGadgeBaseOnScore(badgeCardList, Badge.BRONZE_MULTIPLICATOR, totalScore, 100, userId);
-        badgeCard.ifPresent(badgeCards::add);
+        checkAndGiveGadgeBaseOnScore(badgeCardList, Badge.BRONZE_MULTIPLICATOR, totalScore, 100, userId)
+                .ifPresent(badgeCards::add);
+
+        checkAndGiveGadgeBaseOnScore(badgeCardList, Badge.SILVER_MULTIPLICATOR, totalScore, 500, userId)
+                .ifPresent(badgeCards::add);
+
+        checkAndGiveGadgeBaseOnScore(badgeCardList, Badge.GOLD_MULTIPLICATOR, totalScore, 999, userId)
+                .ifPresent(badgeCards::add);
+
+        // 첫 번째 정답 배지
+        if (scoreCardList.size() == 1 && !containsBadge(badgeCardList, Badge.FIRST_WON))
+        {
+            BadgeCard firstWonBadge = giveBadgeToUser(Badge.FIRST_WON, userId);
+            badgeCards.add(firstWonBadge);
+        }
+
+        return badgeCards;
     }
 
     /**
@@ -99,7 +118,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameStats retrieveStatsForUser(Long userId) {
-        return null;
+    public GameStats retrieveStatsForUser(Long userId)
+    {
+        int score = scoreCardRepository.getTotalScoreForUser(userId);
+
+        List<BadgeCard> badgeCards = badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
+        return new GameStats(userId, score, badgeCards.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
     }
 }
