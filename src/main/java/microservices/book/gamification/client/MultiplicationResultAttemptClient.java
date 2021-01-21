@@ -7,5 +7,7 @@ import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
  * 통신 방식은 상관 없음
  */
 public interface MultiplicationResultAttemptClient {
+
     MultiplicationResultAttempt retrieveMultiplicationResultAttemptById(final Long multiplicationId);
+
 }

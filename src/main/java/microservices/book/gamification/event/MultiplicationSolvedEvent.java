@@ -1,20 +1,24 @@
 package microservices.book.gamification.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
-@RequiredArgsConstructor
 @Getter
 @ToString
+@Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class MultiplicationSolvedEvent implements Serializable {
 
-    private final Long multiplicationResultAttemptId;
-    private final Long userId;
-    private final boolean correct;
+    private  Long multiplicationResultAttemptId;
+    private  Long userId;
+    private  boolean correct;
+
+    public MultiplicationSolvedEvent(Long multiplicationResultAttemptId, Long userId, boolean correct) {
+        this.multiplicationResultAttemptId = multiplicationResultAttemptId;
+        this.userId = userId;
+        this.correct = correct;
+    }
 
 }

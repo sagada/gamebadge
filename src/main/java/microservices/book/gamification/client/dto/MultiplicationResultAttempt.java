@@ -5,22 +5,28 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import microservices.book.gamification.client.MultiplicationResultAttemptDeserializer;
 
-import javax.persistence.*;
-
+/**
+ * User 가 Multiplication 을 계산한 답안을 정의한 클래스
+ */
+@RequiredArgsConstructor
+@Getter
 @ToString
 @EqualsAndHashCode
-@Getter
-@RequiredArgsConstructor
 @JsonDeserialize(using = MultiplicationResultAttemptDeserializer.class)
 public final class MultiplicationResultAttempt {
+
     private final String userAlias;
+
     private final int multiplicationFactorA;
     private final int multiplicationFactorB;
     private final int resultAttempt;
+
     private final boolean correct;
 
-    MultiplicationResultAttempt(){
+    // JSON/JPA 를 위한 빈 생성자
+    public MultiplicationResultAttempt() {
         userAlias = null;
         multiplicationFactorA = -1;
         multiplicationFactorB = -1;

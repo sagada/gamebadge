@@ -9,6 +9,7 @@ import microservices.book.gamification.domain.GameStats;
 import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.repository.BadgeCardRepository;
 import microservices.book.gamification.repository.ScoreCardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class GameServiceImpl implements GameService {
     private final BadgeCardRepository badgeCardRepository;
     private final MultiplicationResultAttemptClient multiplicationResultAttemptClient;
 
+    @Autowired
     public GameServiceImpl(
             ScoreCardRepository scoreCardRepository
             , BadgeCardRepository badgeCardRepository
@@ -55,7 +57,7 @@ public class GameServiceImpl implements GameService {
     /**
      * 조건이 충족될 경우 새 배지를 제공하기 위해 얻은 총 점수와 점수 카드를 확인
      */
-    private List<BadgeCard> processForBadges(final Long userId, final Long attemptId)
+    private List<BadgeCard> processForBadges(Long userId, final Long attemptId)
     {
 
         List<BadgeCard> badgeCards = new ArrayList<>();
