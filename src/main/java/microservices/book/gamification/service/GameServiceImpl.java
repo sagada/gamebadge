@@ -1,6 +1,8 @@
 package microservices.book.gamification.service;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.book.gamification.client.MultiplicationResultAttemptClient;
+import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import microservices.book.gamification.domain.Badge;
 import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
@@ -18,14 +20,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GameServiceImpl implements GameService {
 
+    private static final int LUCKY_NUMBER = 42;
     private final ScoreCardRepository scoreCardRepository;
     private final BadgeCardRepository badgeCardRepository;
+    private final MultiplicationResultAttemptClient multiplicationResultAttemptClient;
 
     public GameServiceImpl(
             ScoreCardRepository scoreCardRepository
-            , BadgeCardRepository badgeCardRepository) {
+            , BadgeCardRepository badgeCardRepository
+            , MultiplicationResultAttemptClient multiplicationResultAttemptClient) {
         this.scoreCardRepository = scoreCardRepository;
         this.badgeCardRepository = badgeCardRepository;
+        this.multiplicationResultAttemptClient = multiplicationResultAttemptClient;
     }
 
     @Override
@@ -74,6 +80,15 @@ public class GameServiceImpl implements GameService {
         {
             BadgeCard firstWonBadge = giveBadgeToUser(Badge.FIRST_WON, userId);
             badgeCards.add(firstWonBadge);
+        }
+
+        // 행운의 숫자 뱃지
+        MultiplicationResultAttempt attempt = multiplicationResultAttemptClient.retrieveMultiplicationResultAttemptById(attemptId);
+        if (!containsBadge(badgeCardList, Badge.LUCKY_NUMBER) &&
+            (LUCKY_NUMBER == attempt.getMultiplicationFactorA() || LUCKY_NUMBER == attempt.getMultiplicationFactorB()))
+        {
+            BadgeCard luckyNumberBadge = giveBadgeToUser(Badge.LUCKY_NUMBER, userId);
+            badgeCards.add(luckyNumberBadge);
         }
 
         return badgeCards;

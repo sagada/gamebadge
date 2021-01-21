@@ -11,5 +11,5 @@ public enum Badge {
     // 특정 조건으로 획득하는 배지
     FIRST_ATTEMPT,
     FIRST_WON,
-    LUCK_NUMBER
+    LUCKY_NUMBER
 }
