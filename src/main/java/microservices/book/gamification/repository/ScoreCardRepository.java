@@ -25,7 +25,8 @@ public interface ScoreCardRepository extends CrudRepository<ScoreCard, Long> {
      * @return 높은 점수 순으로 정렬된 리더보드
      */
     @Query("select new microservices.book.gamification.domain.LeaderBoardRow(s.userId, SUM(s.score)) " +
-            "FROM ScoreCard s GROUP BY s.userId ORDER BY SUM(s.score) DESC")
+            "FROM microservices.book.gamification.domain.ScoreCard s " +
+            "GROUP BY s.userId ORDER BY SUM(s.score) DESC")
     List<LeaderBoardRow> findFirst10();
 
     /**
