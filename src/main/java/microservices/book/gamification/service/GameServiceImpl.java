@@ -30,14 +30,16 @@ public class GameServiceImpl implements GameService {
     public GameServiceImpl(
             ScoreCardRepository scoreCardRepository
             , BadgeCardRepository badgeCardRepository
-            , MultiplicationResultAttemptClient multiplicationResultAttemptClient) {
+            , MultiplicationResultAttemptClient multiplicationResultAttemptClient)
+    {
         this.scoreCardRepository = scoreCardRepository;
         this.badgeCardRepository = badgeCardRepository;
         this.multiplicationResultAttemptClient = multiplicationResultAttemptClient;
     }
 
     @Override
-    public GameStats newAttemptForUser(Long userId, Long attemptId, boolean correct) {
+    public GameStats newAttemptForUser(Long userId, Long attemptId, boolean correct)
+    {
 
         // 처음엔 답이 맞았을 때만 점수를 줌
         if (correct)

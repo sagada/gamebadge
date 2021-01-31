@@ -13,7 +13,8 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     private final ScoreCardRepository scoreCardRepository;
 
     @Autowired
-    public LeaderBoardServiceImpl(ScoreCardRepository scoreCardRepository) {
+    public LeaderBoardServiceImpl(ScoreCardRepository scoreCardRepository)
+    {
         this.scoreCardRepository = scoreCardRepository;
     }
 
